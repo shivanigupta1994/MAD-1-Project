@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, session
 from flask_sqlalchemy import SQLAlchemy
 import os
 
@@ -9,6 +9,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///" + os.path.join(current_dir,
 db = SQLAlchemy()
 db.init_app(app)
 app.app_context().push()
+app.secret_key=os.urandom(24)
 
 from controller import *
 
