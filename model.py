@@ -3,7 +3,7 @@ from app import db
 class User(db.Model):
     __tablename__="user"
 
-    id = db.Column('id', db.Integer, primary_key = True, autoincrement="True")
+    id = db.Column('id', db.Integer, primary_key = True)
     name = db.Column(db.String(50))
     address = db.Column(db.String(250))
     contact_no = db.Column(db.Integer)
