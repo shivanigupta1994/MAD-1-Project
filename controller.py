@@ -10,14 +10,14 @@ def index():
         return redirect("/sign-in")
 
 @app.route("/sign-in")
-def sign(): 
+def sign_in(): 
     if "user_id" in session:
         userid = session["user_id"]
         return render_template("index.html")
     return render_template("sign-in.html")
 
 @app.route("/sign-up")
-def sig():
+def sign_up():
     return render_template("sign-up.html")
 
 @app.route("/login_authentication", methods=["POST"])             #
@@ -61,7 +61,7 @@ def register():
             cpassword = request.form.get("password")
             csex = request.form.getlist("sex")
             for i in csex[:1]:
-                update_user_db = User(name=cname, address=caddress, contact_no=ccontact, email=cemail, password=cpassword, sex=i, )
+                update_user_db = User(name=cname, address=caddress, contact_no=ccontact, email=cemail, password=cpassword, sex=i)
             db.session.add(update_user_db)
             db.session.flush()
         except Exception as e:

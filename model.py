@@ -11,4 +11,13 @@ class User(db.Model):
     email = db.Column(db.String(100))
     password = db.Column(db.String(50))  
     
+class Admin(db.Model):
+    __tablename__="admin"
+
+    id = db.Column('id', db.Integer, primary_key = True)
+    name = db.Column(db.String(50))
+    contact_no = db.Column(db.Integer)
+    sex = db.Column(db.String(6))
+    email = db.Column(db.String(100))
+    password = db.Column(db.String(50))  
     

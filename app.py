@@ -12,6 +12,7 @@ app.app_context().push()
 app.secret_key=os.urandom(24)
 
 from controller import *
+from admin import *
 
 if __name__== "__main__":
     app.run(host='0.0.0.0', port=8080, debug=True)
