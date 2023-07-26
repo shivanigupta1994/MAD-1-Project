@@ -21,3 +21,9 @@ class Admin(db.Model):
     email = db.Column(db.String(100))
     password = db.Column(db.String(50))  
     
+class Category(db.Model):
+    __tablename__="category"
+
+    id = db.Column('id', db.Integer, primary_key = True)
+    name = db.Column(db.String(50))
+    image = db.Column(db.String(50))

@@ -74,3 +74,10 @@ def admin_register():
             if check:
                 session["admin_id"] = check[0].id
                 return redirect("/cms")
+            
+@app.route("/admin_category_cms")
+def admin_category_cms():
+    if "admin_id" in session:
+        return render_template("admin_category_cms.html")
+    else:
+        return redirect("/admin_sign-in")
