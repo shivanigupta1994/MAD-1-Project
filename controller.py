@@ -75,3 +75,21 @@ def register():
             if check:
                 session["user_id"] = check[0].id
                 return redirect("/")
+
+@app.route("/category")
+def category():
+    if "id" in session:
+        category = Category.query.all()
+        check = [i for i in category]
+        return render_template("category.html", all_categories = check)
+    else:
+        return redirect("/sign-in")
+    
+@app.route("/product")
+def product():
+    if "id" in session:
+        product = Product.query.all()
+        check = [i for i in product]
+        return render_template("product.html", all_products = check)
+    else:
+        return redirect("/sign-in")

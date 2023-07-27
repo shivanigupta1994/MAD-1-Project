@@ -27,3 +27,17 @@ class Category(db.Model):
     id = db.Column('id', db.Integer, primary_key = True)
     name = db.Column(db.String(50))
     image = db.Column(db.String(50))
+
+class Product(db.Model):
+    __tablename__="product"
+
+    id = db.Column('id', db.Integer, primary_key = True)
+    name = db.Column(db.String(50))
+    category = db.Column(db.String(50))
+    brand = db.Column(db.String(50))
+    mfg_date = db.Column(db.String(20))
+    exp_date = db.Column(db.String(20))
+    unit = db.Column(db.String(15))
+    qty = db.Column(db.Integer())
+    price_per_unit = db.Column(db.Float(15))
+    image = db.Column(db.String)

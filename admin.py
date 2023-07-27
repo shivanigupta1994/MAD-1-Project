@@ -78,6 +78,17 @@ def admin_register():
 @app.route("/admin_category_cms")
 def admin_category_cms():
     if "admin_id" in session:
-        return render_template("admin_category_cms.html")
+        category = Category.query.all()
+        check = [i for i in category]
+        return render_template("admin_category_cms.html", all_categories = check)
+    else:
+        return redirect("/admin_sign-in")
+    
+@app.route("/admin_product_cms")
+def admin_product_cms():
+    if "admin_id" in session:
+        product = Product.query.all()
+        check = [i for i in product]
+        return render_template("admin_product_cms.html", all_products = check)
     else:
         return redirect("/admin_sign-in")
