@@ -1,15 +1,17 @@
 {% extends "base.html" %}
     {% block main %}
-        
-        <h1><center><u>CATEGORIES</u></center></h1>
+        <div>
+            <div class="text-bg-info p-2" style="font-family:Algerian;">
+            <h1><center><u>CATEGORIES</u></center></h1>
+        </div>
         <div class="row row-cols-1 row-cols-md-4 g-4 my-2 mx-2">
             {%for i in all_categories %}
                 <div class="col" id="mv">
                 <div class="card">
-                    <a href='/product/{{i.id}}' method='get'><img src="{{i.image}}" class="card-img-top" alt="{{i.name}}"></a>
+                    <img src="{{i.image}}" height="225px" class="card-img-top" alt="{{i.name}}">
                     <div class="card-body">
-                    <h5 class="card-title">{{i.name}}</h5>
-                    <button type="button" style="float:left;" class="btn btn-success">Update</button>
+                    <center><h5 class="card-title">{{i.name}}</h5></center>
+                    <a href='/admin_category_edit/{{i.id}}' type="button" style="float:left;" class="btn btn-success">Update</a>
                     <button type="button" style="float:right;" class="btn btn-primary">Delete</button>
                     </div>
                 </div>

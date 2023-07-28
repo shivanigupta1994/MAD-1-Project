@@ -78,7 +78,7 @@ def register():
 
 @app.route("/category")
 def category():
-    if "id" in session:
+    if "user_id" in session:
         category = Category.query.all()
         check = [i for i in category]
         return render_template("category.html", all_categories = check)
@@ -87,7 +87,7 @@ def category():
     
 @app.route("/product")
 def product():
-    if "id" in session:
+    if "user_id" in session:
         product = Product.query.all()
         check = [i for i in product]
         return render_template("product.html", all_products = check)
