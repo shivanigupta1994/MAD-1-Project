@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+    {% block main %}
+    <div class="container mt-5 w-50 p-3">
+        <form enctype="multipart/form-data" action="/admin_product_update/{{ product_info.id }}" method="POST">
+            <div class="input-group mb-3">
+                <b>Product name : &nbsp;</b>
+                <input type="text" class="form-control" name="product_name" value="{{product_info.name}}" placeholder="Product_name" aria-label="product_name" aria-describedby="basic-addon1"><br>
+            </div>
+            <div class="input-group mb-3">
+                <b>Product category : &nbsp;</b>
+                <input type="text" class="form-control" name="product_category" value="{{product_info.category}}" placeholder="Product_category" aria-label="product_category" aria-describedby="basic-addon1"><br>
+            </div>
+            <div class="input-group mb-3">
+                <b>Product brand : &nbsp;</b>
+                <input type="text" class="form-control" name="product_brand" value="{{product_info.brand}}" placeholder="Product_brand" aria-label="product_brand" aria-describedby="basic-addon1"><br>
+            </div>
+            <div class="input-group mb-3">
+                <b>Product mfg_date : &nbsp;</b>
+                <input type="text" class="form-control" name="product_mfg_date" value="{{product_info.mfg_date}}" placeholder="Product_mfg_date" aria-label="product_mfg_date" aria-describedby="basic-addon1"><br>
+            </div>
+            <div class="input-group mb-3">
+                <b>Product exp_date : &nbsp;</b>
+                <input type="text" class="form-control" name="product_exp_date" value="{{product_info.exp_date}}" placeholder="Product_exp_date" aria-label="product_exp_date" aria-describedby="basic-addon1"><br>
+            </div>
+            <div class="input-group mb-3">
+                <b>Product unit : &nbsp;</b>
+                <input type="text" class="form-control" name="product_unit" value="{{product_info.unit}}" placeholder="Product_unit" aria-label="product_unit" aria-describedby="basic-addon1"><br>
+            </div>
+            <div class="input-group mb-3">
+                <b>Product qty : &nbsp;</b>
+                <input type="text" class="form-control" name="product_qty" value="{{product_info.qty}}" placeholder="Product_qty" aria-label="product_qty" aria-describedby="basic-addon1"><br>
+            </div>
+            <div class="input-group mb-3">
+                <b>Product price_per_unit : &nbsp;</b>
+                <input type="text" class="form-control" name="product_price_per_unit" value="{{product_info.price_per_unit}}" placeholder="Product_price_per_unit" aria-label="product_price_per_unit" aria-describedby="basic-addon1">
+            </div>
+            <dl>
+                <b>Image : </b>
+                <input type="file" name="file" autocomplete="off">
+            </dl>
+            <center><img src="{{product_info.image}}" height="250px"></center>
+            <br>
+            <div class="input-group mb-3 mt-3">
+                <input type="password" class="form-control" name="password" placeholder="Password" aria-label="password" aria-describedby="basic-addon1">
+            </div>
+            <button type="submit" class="btn btn-primary mt-2" style="float:right;">Submit</button>
+        </form>
+    </div>
+    {% endblock %}

@@ -107,7 +107,7 @@ def admin_category_edit(id):
     else:
         return redirect("/admin_sign-in")
 
-@app.route("/admin_category_update/<int:id>")
+@app.route("/admin_category_update/<int:id>", methods=["POST"])
 def admin_category_update(id):
     if "admin_id" in session:
         category_name = request.form.get("category_name")
@@ -124,8 +124,45 @@ def admin_category_update(id):
         if admin_check:
             check[0].name = category_name
             if filename is not None:
-                check[0].image = filename
+                check[0].image = "/static/"+filename
+            db.session.flush()
+            db.session.commit()
             return redirect("/admin_category_cms")
+        else:
+            return "Wrong Password!"
+    else:
+        return redirect("/admin_sign-in")
+
+@app.route("/admin_product_edit/<int:id>")
+def admin_product_edit(id):
+    if "admin_id" in session:
+        product = Product.query.filter_by(id=id)
+        check = [i for i in product]
+        return render_template("admin_product_edit.html", product_info=check[0])
+    else:
+        return redirect("/admin_sign-in")
+
+@app.route("/admin_product_update/<int:id>", methods=["POST"])
+def admin_product_update(id):
+    if "admin_id" in session:
+        product_name = request.form.get("product_name")
+        password = request.form.get("password")
+        file = request.files['file']
+        filename = None
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        verify_admin = Admin.query.filter_by(id=session["admin_id"], password=password)
+        admin_check = [i for i in verify_admin]
+        product = Product.query.filter_by(id=id)
+        check = [i for i in product]
+        if admin_check:
+            check[0].name = product_name
+            if filename is not None:
+                check[0].image = "/static/"+filename
+            db.session.flush()
+            db.session.commit()
+            return redirect("/admin_product_cms")
         else:
             return "Wrong Password!"
     else:

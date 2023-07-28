@@ -8,7 +8,7 @@
             {%for i in all_products %}
                 <div class="col" id="mv">
                 <div class="card">
-                    <a href='/product/{{i.id}}' method='get'><img src="{{i.image}}" height="225px" class="card-img-top" alt="{{i.name}}"></a>
+                    <img src="{{i.image}}" height="225px" class="card-img-top" alt="{{i.name}}">
                     <div class="card-body">
                     <!-- <p class="card-title">id: {{i.id}}</p> -->
                     <p class="card-title" style="float:right;"><b>₹{{i.price_per_unit}}</b>/{{i.unit}}</p>
@@ -19,7 +19,7 @@
                     <p class="card-title">exp_date: {{i.exp_date}}</p>
                     <!-- <p class="card-title">unit: {{i.unit}}</p> -->
                     <!-- <p class="card-title">qty: {{i.qty}}</p> -->
-                    <button type="button" style="float:left;" class="btn btn-success">Update</button>
+                    <a href='/admin_product_edit/{{i.id}}' type="button" style="float:left;" class="btn btn-success">Update</a>
                     <button type="button" style="float:right;" class="btn btn-primary">Delete</button>
                     </div>
                 </div>

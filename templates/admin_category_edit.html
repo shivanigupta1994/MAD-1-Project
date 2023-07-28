@@ -1,20 +1,21 @@
 {% extends "base.html" %}
     {% block main %}
     <div class="container mt-5 w-50 p-3">
-        <form enctype="multipart/form-data" action="/admin_category_update/{{category_info.id}}">
+        <form enctype="multipart/form-data" action="/admin_category_update/{{category_info.id}}" method="POST">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" name="category_name" value="{{category_info.name}}" placeholder="Category_name" aria-label="category_name" aria-describedby="basic-addon1">
+                <b>Category name : &nbsp;</b>
+                <input type="text" class="form-control" name="category_name" value="{{category_info.name}}" placeholder="Category name" aria-label="category_name" aria-describedby="basic-addon1">
             </div>
             <dl>
-                <p><input type="file" name="file" autocomplete="off"></p>
+                <b>Image : </b>
+                <input type="file" name="file" autocomplete="off">
             </dl>
-            <img src="{{category_info.image}}" height="250px">
+            <center><img src="{{category_info.image}}" height="250px"></center>
             <br>
             <div class="input-group mb-3 mt-3">
                 <input type="password" class="form-control" name="password" placeholder="Password" aria-label="password" aria-describedby="basic-addon1">
             </div>
-            <button type="submit" class="btn btn-primary mt-2">Submit</button>
+            <button type="submit" class="btn btn-primary mt-2" style="float:right;">Submit</button>
         </form>
     </div>
-    
     {% endblock %}
