@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block main %}
+    <div class="container my-4">
+        <div class="text-bg-info p-2" style="font-family: Algerian;">
+            <h1><center><u>SHOPPING CART</u></center></h1>
+        </div>
+        <div class="table-responsive">
+            <form method="POST" action="/update_cart">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Product</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Subtotal</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td>{{ item.product.brand }}</td>
+                            <td>
+                                <input type="number" name="item_{{ item.id }}" value="{{ item.qty }}" min="1" max="100" class="form-control">
+                            </td>
+                            <td>₹{{ item.subtotal }}</td>
+                            <td>
+                                <button type="submit" name="remove_item" value="{{ item.id }}" class="btn btn-danger btn-sm">Remove</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+        </div>
+        <div class="text-center">
+            <h4>Total: ₹{{ cart_total }}</h4>
+            <a href="/checkout" class="btn btn-success btn-lg">Proceed to Checkout</a>
+        </div>
+    </div>
+{% endblock %}

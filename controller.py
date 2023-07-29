@@ -93,3 +93,10 @@ def product():
         return render_template("product.html", all_products = check)
     else:
         return redirect("/sign-in")
+    
+@app.route("/cart")
+def cart():
+    if "user_id" in session:
+        return render_template("cart.html")
+    else:
+        return redirect("/sign-in")
