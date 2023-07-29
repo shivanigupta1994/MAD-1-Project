@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+    {% block main %}
+    <div class="container mt-5 w-50 p-3">
+        <form enctype="multipart/form-data" action="/admin_category_add" method="POST">
+            <div class="input-group mb-3">
+                <b>Category name : &nbsp;</b>
+                <input type="text" class="form-control" name="category_name" placeholder="Category name" aria-label="category_name" aria-describedby="basic-addon1">
+            </div>
+            <dl>
+                <b>Image : </b>
+                <input type="file" name="file" autocomplete="off">
+            </dl>
+            <br>
+            <div class="input-group mb-3 mt-3">
+                <input type="password" class="form-control" name="password" placeholder="Password" aria-label="password" aria-describedby="basic-addon1">
+            </div>
+            <button type="submit" class="btn btn-primary mt-2" style="float:right;">Submit</button>
+        </form>
+    </div>
+    {% endblock %}

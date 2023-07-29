@@ -98,6 +98,60 @@ def admin_product_cms():
     else:
         return redirect("/admin_sign-in")
     
+@app.route("/admin_category_add", methods=["GET", "POST"])
+def admin_category_add():
+    if "admin_id" in session:
+        if request.method=="POST":
+            category_name=request.form['category_name']
+            password=request.form['password']
+            file = request.files['file']
+            filename = None
+            if (file and allowed_file(file.filename)):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            verify_admin = Admin.query.filter_by(id=session["admin_id"], password=password)
+            admin_check = [i for i in verify_admin]
+            if admin_check:
+                if filename is not None:
+                    image = "/static/"+filename
+            new_category=Category(name=category_name, image=image)
+            db.session.add(new_category)
+            db.session.flush()
+            db.session.commit()
+            return redirect("/admin_category_cms")
+        return render_template("admin_category_add.html")
+    
+@app.route("/admin_product_add", methods=["GET", "POST"])
+def admin_product_add():
+    if "admin_id" in session:
+        if request.method=="POST":
+            product_name=request.form['product_name']
+            product_category=request.form['product_category']
+            product_brand=request.form['product_brand']
+            product_mfg_date=request.form['product_mfg_date']
+            product_exp_date=request.form['product_exp_date']
+            product_unit=request.form['product_unit']
+            product_qty=request.form['product_qty']
+            product_price_per_unit=request.form['product_price_per_unit']
+            password=request.form['password']
+            file = request.files['file']
+            filename = None
+            if (file and allowed_file(file.filename)):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            verify_admin = Admin.query.filter_by(id=session["admin_id"], password=password)
+            admin_check = [i for i in verify_admin]
+            if admin_check:
+                if filename is not None:
+                    image = "/static/"+filename
+            new_product=Product(name=product_name, category=product_category, brand=product_brand, mfg_date=product_mfg_date, exp_date=product_exp_date, unit=product_unit, qty=product_qty, price_per_unit=product_price_per_unit, image=image)
+            db.session.add(new_product)
+            db.session.flush()
+            db.session.commit()
+            return redirect("/admin_product_cms")
+        return render_template("admin_product_add.html")
+    
+    
 @app.route("/admin_category_edit/<int:id>")
 def admin_category_edit(id):
     if "admin_id" in session:
@@ -167,4 +221,22 @@ def admin_product_update(id):
             return "Wrong Password!"
     else:
         return redirect("/admin_sign-in")
+
+@app.route("/admin_category_delete/<int:id>")
+def admin_category_delete(id):
+    if "admin_id" in session:
+        Product.query.filter_by(category=id).delete()
+        Category.query.filter_by(id=id).delete()
+        db.session.flush()
+        db.session.commit()
+    return redirect("/admin_category_cms")
+
+@app.route("/admin_product_delete/<int:id>")
+def admin_product_delete(id):
+    if "admin_id" in session:
+        Product.query.filter_by(id=id).delete()
+        db.session.flush()
+        db.session.commit()
+    return redirect("/admin_product_cms")
+
 
