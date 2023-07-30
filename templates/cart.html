@@ -10,21 +10,25 @@
                     <thead>
                         <tr>
                             <th scope="col">Product</th>
-                            <th scope="col">Price</th>
                             <th scope="col">Quantity</th>
-                            <th scope="col">Subtotal</th>
-                            <th scope="col">Actions</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Image</th>
+                            <th scope="col">Brand</th>
+                            <th scope="col">Total Price</th>
+                            <th scope="col">Remove from Cart</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for item in cart_items %}
+                        {% for item in product_list %}
                         <tr>
-                            <td>{{ item.product.name }}</td>
-                            <td>{{ item.product.brand }}</td>
-                            <td>
-                                <input type="number" name="item_{{ item.id }}" value="{{ item.qty }}" min="1" max="100" class="form-control">
-                            </td>
-                            <td>₹{{ item.subtotal }}</td>
+                            <td>{{ item[0] }}</td>
+                            <td>{{ item[1] }}</td>
+                            <td>{{ item[2] }}</td>
+                            <td>{{ item[3] }}</td>
+                            <td>{{ item[4] }}</td>
+                            <td>{{ item[5] }}</td>
+                            <td>{{ item[6] }}</td>
                             <td>
                                 <button type="submit" name="remove_item" value="{{ item.id }}" class="btn btn-danger btn-sm">Remove</button>
                             </td>

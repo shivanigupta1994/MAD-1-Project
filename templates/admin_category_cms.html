@@ -9,7 +9,7 @@
             {%for i in all_categories %}
                 <div class="col" id="mv">
                 <div class="card">
-                    <img src="{{i.image}}" height="225px" class="card-img-top" alt="{{i.name}}">
+                    <a href="/admin_product_cms/{{i.id}}"><img src="{{i.image}}" height="225px" class="card-img-top" alt="{{i.name}}"></a>
                     <div class="card-body">
                     <center><h5 class="card-title">{{i.name}}</h5></center>
                     <a href='/admin_category_edit/{{i.id}}' type="button" style="float:left;" class="btn btn-success">Update</a>

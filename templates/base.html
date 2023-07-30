@@ -17,8 +17,13 @@
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Home</a>
                 <ul class="dropdown-menu">
+                  {% if flag %}
                   <li><a class="dropdown-item" href="/admin_category_cms">Categories</a></li>
                   <li><a class="dropdown-item" href="/admin_product_cms">Product</a></li>
+                  {% else %}
+                  <li><a class="dropdown-item" href="/category">Categories</a></li>
+                  <li><a class="dropdown-item" href="/product">Product</a></li>
+                  {% endif %}
                 </ul>
               </li>
             </ul>

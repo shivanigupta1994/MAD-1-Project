@@ -38,6 +38,14 @@ class Product(db.Model):
     mfg_date = db.Column(db.String(20))
     exp_date = db.Column(db.String(20))
     unit = db.Column(db.String(15))
-    qty = db.Column(db.Integer())
+    qty = db.Column(db.Integer)
     price_per_unit = db.Column(db.Float(15))
     image = db.Column(db.String)
+
+class Cart(db.Model):
+    __tablename__="cart"
+
+    cart_id = db.Column('cart_id', db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer)
+    product_id = db.Column(db.Integer)
+    product_qty = db.Column(db.Integer)

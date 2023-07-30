@@ -10,7 +10,7 @@ def allowed_file(filename):
 @app.route("/cms")
 def admin_index():
     if "admin_id" in session: 
-        return render_template("admin_index.html")
+        return render_template("admin_index.html", flag=True)
     else:
         return redirect("/admin_sign-in")
 
@@ -19,11 +19,11 @@ def admin_sign_in():
     if "admin_id" in session:
         adminid = session["admin_id"]
         return redirect ("/cms")
-    return render_template("admin_sign-in.html")
+    return render_template("admin_sign-in.html", flag=True)
 
 @app.route("/admin_sign-up")
 def admin_sign_up():
-    return render_template("admin_sign-up.html")
+    return render_template("admin_sign-up.html", flag=True)
 
 @app.route("/admin_login_authentication", methods=["POST"])             #
 def admin_login():
@@ -85,16 +85,25 @@ def admin_category_cms():
     if "admin_id" in session:
         category = Category.query.all()
         check = [i for i in category]
-        return render_template("admin_category_cms.html", all_categories = check)
+        return render_template("admin_category_cms.html", all_categories = check, flag=True)
+    else:
+        return redirect("/admin_sign-in")
+    
+@app.route("/admin_product_cms/<int:i>")
+def admin_product_cms(i):
+    if "admin_id" in session:
+        product = Product.query.filter_by(category=i)
+        check = [i for i in product]
+        return render_template("admin_product_cms.html", all_products = check, flag=True)
     else:
         return redirect("/admin_sign-in")
     
 @app.route("/admin_product_cms")
-def admin_product_cms():
+def admin_product_cms_all():
     if "admin_id" in session:
         product = Product.query.all()
         check = [i for i in product]
-        return render_template("admin_product_cms.html", all_products = check)
+        return render_template("admin_product_cms.html", all_products = check, flag=True)
     else:
         return redirect("/admin_sign-in")
     
@@ -119,7 +128,7 @@ def admin_category_add():
             db.session.flush()
             db.session.commit()
             return redirect("/admin_category_cms")
-        return render_template("admin_category_add.html")
+        return render_template("admin_category_add.html", flag=True)
     
 @app.route("/admin_product_add", methods=["GET", "POST"])
 def admin_product_add():
@@ -149,7 +158,7 @@ def admin_product_add():
             db.session.flush()
             db.session.commit()
             return redirect("/admin_product_cms")
-        return render_template("admin_product_add.html")
+        return render_template("admin_product_add.html", flag=True)
     
     
 @app.route("/admin_category_edit/<int:id>")
@@ -157,7 +166,7 @@ def admin_category_edit(id):
     if "admin_id" in session:
         category = Category.query.filter_by(id=id)
         check = [i for i in category]
-        return render_template("admin_category_edit.html", category_info=check[0])
+        return render_template("admin_category_edit.html", category_info=check[0], flag=True)
     else:
         return redirect("/admin_sign-in")
 
@@ -192,7 +201,7 @@ def admin_product_edit(id):
     if "admin_id" in session:
         product = Product.query.filter_by(id=id)
         check = [i for i in product]
-        return render_template("admin_product_edit.html", product_info=check[0])
+        return render_template("admin_product_edit.html", product_info=check[0], flag=True)
     else:
         return redirect("/admin_sign-in")
 
