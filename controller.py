@@ -94,26 +94,20 @@ def product(i):
     else:
         return redirect("/sign-in")
     
-@app.route("/product")
-def product_all():
-    if "user_id" in session:
-        product = Product.query.all()
-        check = [i for i in product]
-        return render_template("product.html", all_products = check, flag=False)
-    else:
-        return redirect("/sign-in")
-    
 @app.route("/cart")
 def cart():
     if "user_id" in session:
         cart = Cart.query.filter_by(user_id=session["user_id"])
         cart_list = [i for i in cart]
         pro_list = []
+        total_price = 0
         for item in cart_list:
             pro = Product.query.filter_by(id=item.product_id).first()
             pro_list.append((pro.name, item.product_qty, pro.price_per_unit, pro.category, pro.image, pro.brand, int(pro.price_per_unit)*int(item.product_qty), item.cart_id ))
             print(pro.name, item.product_qty, pro.price_per_unit, pro.category, pro.image, pro.brand)
-        return render_template("cart.html", product_list = pro_list , flag=False)
+        for price in pro_list:
+            total_price += int(price[6])
+        return render_template("cart.html", product_list = pro_list , flag=False, cart_total=total_price)
     else:
         return redirect("/sign-in")
     
@@ -139,7 +133,7 @@ def add_to_cart(id):
             db.session.commit()
             return redirect(f"/product/{prod.category}")
         else:
-            new_cart_item=Cart(user_id=id, product_id=id, product_qty=qty)
+            new_cart_item=Cart(user_id=session["user_id"], product_id=id, product_qty=qty)
             db.session.add(new_cart_item)
             db.session.commit()
             return redirect(f"/product/{prod.category}")
