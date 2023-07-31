@@ -5,7 +5,6 @@
             <h1><center><u>SHOPPING CART</u></center></h1>
         </div>
         <div class="table-responsive">
-            <form method="POST" action="/update_cart">
                 <table class="table table-bordered table-hover">
                     <thead>
                         <tr>
@@ -30,13 +29,12 @@
                             <td>{{ item[5] }}</td>
                             <td>{{ item[6] }}</td>
                             <td>
-                                <button type="submit" name="remove_item" value="{{ item.id }}" class="btn btn-danger btn-sm">Remove</button>
+                                <center><a href="/remove_from_cart/{{ item[7] }}" name="remove_item" class="btn btn-danger btn-sm">Remove</a></center>
                             </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-            </form>
         </div>
         <div class="text-center">
             <h4>Total: ₹{{ cart_total }}</h4>

@@ -6,23 +6,39 @@
     </div>
         <div class="row row-cols-1 row-cols-md-4 g-4 my-2 mx-2">
             {%for i in all_products %}
+            <form action="/add_to_cart/{{i.id}}", method="POST">
                 <div class="col" id="mv">
                 <div class="card">
-                    <a href='/product/{{i.id}}' method='get'><img src="{{i.image}}" height="225px" class="card-img-top" alt="{{i.name}}"></a>
+                    <a href='/product/{{i.id}}'><img src="{{i.image}}" height="225px" class="card-img-top" alt="{{i.name}}"></a>
                     <div class="card-body">
                     <!-- <p class="card-title">id: {{i.id}}</p> -->
                     <p class="card-title" style="float:right;"><b>₹{{i.price_per_unit}}</b>/{{i.unit}}</p>
                     <p class="card-title"><b>{{i.name}}</b></p>
                     <!-- <p class="card-title">category: {{i.category}}</p> -->
-                    <p class="card-title">{{i.brand}}</p>
+                    <p class="card-title" style="float:right;">{{i.brand}}</p>
+                    <div class="col-md-3 col-lg-3 col-xl-2">
+                        <button class="btn btn-link px-2"
+                          onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                          <i class="fas fa-minus"></i>
+                        </button>
+              
+                        <input id="form1" min="0" name="quantity" value="1" type="number"
+                          class="form-control form-control-sm" />
+              
+                        <button class="btn btn-link px-2"
+                          onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
+                          <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
                     <!-- <p class="card-title">mfg_date: {{i.mfg_date}}</p> -->
                     <p class="card-title" style="float:left;">exp_date: {{i.exp_date}}</p>
                     <!-- <p class="card-title">unit: {{i.unit}}</p> -->
                     <!-- <p class="card-title">qty: {{i.qty}}</p> -->
-                    <button type="button" style="float:right;" class="btn btn-dark">Add to cart</button>
+                    <button type="submit" style="float:right;" class="btn btn-dark">Add to cart</button>
                     </div>
                 </div>
                 </div>
+            </form>
             {% endfor %}
         </div>
     {% endblock %}

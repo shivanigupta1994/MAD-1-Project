@@ -111,8 +111,46 @@ def cart():
         pro_list = []
         for item in cart_list:
             pro = Product.query.filter_by(id=item.product_id).first()
-            pro_list.append((pro.name, item.product_qty, pro.price_per_unit, pro.category, pro.image, pro.brand, int(pro.price_per_unit)*int(item.product_qty)))
+            pro_list.append((pro.name, item.product_qty, pro.price_per_unit, pro.category, pro.image, pro.brand, int(pro.price_per_unit)*int(item.product_qty), item.cart_id ))
             print(pro.name, item.product_qty, pro.price_per_unit, pro.category, pro.image, pro.brand)
         return render_template("cart.html", product_list = pro_list , flag=False)
     else:
         return redirect("/sign-in")
+    
+@app.route("/remove_from_cart/<int:id>")
+def remove_from_cart(id):
+    if "user_id" in session:
+        Cart.query.filter_by(user_id=session["user_id"], cart_id=id).delete()
+        db.session.flush()
+        db.session.commit()
+        return redirect("/cart")
+    else:
+        return redirect("/sign-in")
+    
+@app.route("/add_to_cart/<int:id>", methods=["POST"])
+def add_to_cart(id):
+    if "user_id" in session:
+        prod=Product.query.filter_by(id=id).first()
+        cart = Cart.query.filter_by(user_id=session["user_id"], product_id=id).first()
+        qty = request.form.get("quantity")
+        if (cart):
+            cart.product_qty += int(qty)
+            db.session.flush()
+            db.session.commit()
+            return redirect(f"/product/{prod.category}")
+        else:
+            new_cart_item=Cart(user_id=id, product_id=id, product_qty=qty)
+            db.session.add(new_cart_item)
+            db.session.commit()
+            return redirect(f"/product/{prod.category}")
+    else:
+        return redirect("/sign-in")
+        
+            
+
+
+
+
+
+        
+        

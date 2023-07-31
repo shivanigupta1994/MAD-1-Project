@@ -33,7 +33,7 @@ class Product(db.Model):
 
     id = db.Column('id', db.Integer, primary_key = True)
     name = db.Column(db.String(50))
-    category = db.Column(db.String(50))
+    category = db.Column(db.Integer)
     brand = db.Column(db.String(50))
     mfg_date = db.Column(db.String(20))
     exp_date = db.Column(db.String(20))
