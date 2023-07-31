@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block main %}
+<center>
+<br><br>
+    <h3><b><u>Search for "{{ query }}"</u></b></h3><br><br>
+    <div>
+        {% if results %}
+            <ol start=1 type="i">
+                {% for product in results %}
+                    <li>
+                        <a href="/product/{{ product.category }}"><br>{{ product.name }}</a>
+                        <a href="/product/{{ product.category }}"><br>{{ product.brand}}</a>
+                    </li>
+                {% endfor %}
+            </ol>
+        {% else %}
+            <p>No results found.</p>
+        {% endif %}
+    </div>
+</center>
+{% endblock %}
