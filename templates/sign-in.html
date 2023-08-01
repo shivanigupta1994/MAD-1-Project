@@ -167,6 +167,14 @@
       <label class="form-check-label" for="flexCheckDefault"> Remember me
       </label></center>
     </div>
+    <!-- Render flashed messages for backened validation -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+                {% for message in messages %}
+                    <b><center>{{ message }}</center></b><br>
+                {% endfor %}
+        {% endif %}
+    {% endwith %}
     <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
     <center><p class="mt-5 mb-3 text-muted">&copy; SG</p></center>
   </form>

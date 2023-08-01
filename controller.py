@@ -1,4 +1,4 @@
-from flask import render_template, session, request, redirect
+from flask import render_template, session, request, redirect, flash
 from app import *
 from model import *
 from sqlalchemy import or_, func
@@ -60,6 +60,7 @@ def login():
         else:
             #If provided email & password not match with any user in the database
             print("not found")
+            flash("INVALID EMAIL OR PASSWORD")
             #redirect user to sign_in page to try again
             return redirect("/sign-in")
     else:
@@ -260,7 +261,7 @@ def search():
             #If there are category matches, display products under the first matched category
             category_id = category_results[0].id
             products_in_category = Product.query.filter_by(category=category_id).all()
-            return render_template("search.html", query=input_query, results=products_in_category)
+            return render_template("search.html", query=input_query, results=products_in_category, flag=False)
 
         #If no category matches, search for products matching the input query
         product_results = Product.query.filter(
@@ -271,11 +272,84 @@ def search():
         ).all()
 
         if product_results:
-            return render_template("search.html", query=input_query, results=product_results)
+            return render_template("search.html", query=input_query, results=product_results, flag=False)
 
     return render_template("search.html", query=input_query, results=None)
 
 
+@app.route("/add_to_cart_search/<int:id>", methods=["POST", "GET"])
+def add_to_cart_search(id):    
+    #Check if "user_id" key exists in the session
+    if "user_id" in session:
+        input_query = request.form.get("query")
+        #Query the product with the given "id" from the database
+        prod=Product.query.filter_by(id=id).first()
+        #Query the user cart to check if the product is already in cart based on its "id"
+        cart = Cart.query.filter_by(user_id=session["user_id"], product_id=id).first()
+        #Get qty of the product to be added to cart from submitted form
+        qty = request.form.get("quantity")
+        if (cart):
+            #If product is already in cart, update its qty by adding new qty
+            cart.product_qty += int(qty)
+            #Flush changes to database
+            db.session.flush()
+            #Commit changes to database
+            db.session.commit()
+            if input_query:
+            #Check if input query matches any category name
+                category_results = Category.query.filter(Category.name.ilike(f"%{input_query}%")).all()
 
-        
+                if category_results:
+                    #If there are category matches, display products under the first matched category
+                    category_id = category_results[0].id
+                    products_in_category = Product.query.filter_by(category=category_id).all()
+                    return render_template("search.html", query=input_query, results=products_in_category, flag=False)
+
+                #If no category matches, search for products matching the input query
+                product_results = Product.query.filter(
+                    db.or_(
+                        Product.name.ilike(f"%{input_query}%"),
+                        Product.brand.ilike(f"%{input_query}%"),
+                    )
+                ).all()
+
+                if product_results:
+                    return render_template("search.html", query=input_query, results=product_results, flag=False)
+
+            return render_template("search.html", query=input_query, results=None, flag=False)
+        else:
+            #If product is not already in cart, create a new cart item with product details
+            new_cart_item=Cart(user_id=session["user_id"], product_id=id, product_qty=qty)
+            #Add new cart item to the database session
+            db.session.add(new_cart_item)
+            #Commit changes to database
+            db.session.commit()
+            if input_query:
+                #Check if input query matches any category name
+                category_results = Category.query.filter(Category.name.ilike(f"%{input_query}%")).all()
+
+                if category_results:
+                    #If there are category matches, display products under the first matched category
+                    category_id = category_results[0].id
+                    products_in_category = Product.query.filter_by(category=category_id).all()
+                    return render_template("search.html", query=input_query, results=products_in_category, flag=False)
+
+                #If no category matches, search for products matching the input query
+                product_results = Product.query.filter(
+                    db.or_(
+                        Product.name.ilike(f"%{input_query}%"),
+                        Product.brand.ilike(f"%{input_query}%"),
+                    )
+                ).all()
+
+                if product_results:
+                    return render_template("search.html", query=input_query, results=product_results, flag=False)
+
+            return render_template("search.html", query=input_query, results=None, flag=False)
+    else:
+        #If "user_id" key not exists in session
+        #redirect user to sign-in page to authenticate before performing any cart-related actions
+        return redirect("/sign-in")
+             
+
         

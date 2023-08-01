@@ -31,7 +31,9 @@
                 </ul>
               </li>
             </ul>
-            
+            {% if flag==False %}
+            <a href='/cart' type="button" style="float:right;" class="btn btn-dark mx-2 my-2">&nbsp;&nbsp;Go to Cart&nbsp;&nbsp;</a>
+            {% endif %}
             <!--  -->
             <form class="d-flex" role="search" action="/search" method="GET">
               <input class="form-control me-2" type="text" name="query" placeholder="Enter for search" aria-label="Search">
@@ -39,9 +41,15 @@
             </form>
             <!-- Logout form which acts to "admin_logout" route & uses POST method -->
             <!-- After hit to Logout button, it logouts admin by removing admin_id from session  -->
+            {% if flag %}
             <form class="d-flex mx-2" role="search" action="/admin_logout" method="POST">
               <button class="btn btn-outline-success" type="submit">Logout</button>
             </form>
+            {% else %}
+            <form class="d-flex mx-2" role="search" action="/logout" method="POST">
+              <button class="btn btn-outline-success" type="submit">Logout</button>
+            </form>
+            {% endif %}
           </div>
         </div>
       </nav>
