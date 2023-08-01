@@ -11,7 +11,7 @@ def allowed_file(filename):
     #filename.rsplit('.', 1): splits filename into 2 parts (filename & extension) & splits the string at rightmost occurreence of dot
     #filename.rsplit('.', 1)[1]: selects 2nd part of split, i.e., file extension
     #filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS: checks if lowercase file extension is presentt in ALLOWED EXTENSIONS
-    #True if file has allowed extension, otherwise, False
+    #True if file has allowed extension, otherwise, True
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
@@ -412,6 +412,7 @@ def admin_category_delete(id):
         db.session.commit()
     #Redirect the admin back to admin_category_cms page after successfully deleting the category
     return redirect("/admin_category_cms")
+    
 
 #ROUTE FOR DELETING A SPECIFIC PRODUCT IN ADMIN CMS
 @app.route("/admin_product_delete/<int:id>")
@@ -428,7 +429,33 @@ def admin_product_delete(id):
     return redirect("/admin_product_cms")
 
 
+@app.route("/admin_search")
+def admin_search():
+    #request.arg.get() is used to retrieve query parameters from the URL
+    #Query parameters added to the URL after "?" symbol & used for GET requests
+    input_query = request.args.get("query")
+    if input_query:
+        #Check if input query matches any category name
+        category_results = Category.query.filter(Category.name.ilike(f"%{input_query}%")).all()
 
+        if category_results:
+            #If there are category matches, display products under the first matched category
+            category_id = category_results[0].id
+            products_in_category = Product.query.filter_by(category=category_id).all()
+            return render_template("admin_search.html", query=input_query, results=products_in_category, flag=True)
+
+        #If no category matches, search for products matching the input query
+        product_results = Product.query.filter(
+            db.or_(
+                Product.name.ilike(f"%{input_query}%"),
+                Product.brand.ilike(f"%{input_query}%"),
+            )
+        ).all()
+
+        if product_results:
+            return render_template("admin_search.html", query=input_query, results=product_results, flag=True)
+
+    return render_template("admin_search.html", query=input_query, results=None, flag=True)
 
 
 #QUES???? IN DELETION PART, WHY NOT REDIRECT TO SIGN-IN PAGE IF ADMIN_ID KEY NOT EXISTS

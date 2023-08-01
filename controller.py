@@ -274,7 +274,7 @@ def search():
         if product_results:
             return render_template("search.html", query=input_query, results=product_results, flag=False)
 
-    return render_template("search.html", query=input_query, results=None)
+    return render_template("search.html", query=input_query, results=None, flag=False)
 
 
 @app.route("/add_to_cart_search/<int:id>", methods=["POST", "GET"])

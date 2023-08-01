@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+    {% block main %}
+    <center>
+    <br><br>
+    <h3><b><u>Search for "{{ query }}"</u></b></h3><br><br>
+    </center>
+    {% if results %}
+        <div class="row row-cols-1 row-cols-md-4 g-4 my-2 mx-2">
+            {%for i in results %}
+                <div class="col" id="mv">
+                <div class="card">
+                    <img src="{{i.image}}" height="225px" class="card-img-top" alt="{{i.name}}">
+                    <div class="card-body">
+                    <!-- <p class="card-title">id: {{i.id}}</p> -->
+                    <p class="card-title" style="float:right;"><b>₹{{i.price_per_unit}}</b>/{{i.unit}}</p>
+                    <p class="card-title"><b>{{i.name}}</b></p>
+                    <!-- <p class="card-title">category: {{i.category}}</p> -->
+                    <p class="card-title">{{i.brand}}</p>
+                    <!-- <p class="card-title">mfg_date: {{i.mfg_date}}</p> -->
+                    <p class="card-title">exp_date: {{i.exp_date}}</p>
+                    <!-- <p class="card-title">unit: {{i.unit}}</p> -->
+                    <!-- <p class="card-title">qty: {{i.qty}}</p> -->
+                    <a href='/admin_product_edit/{{i.id}}' type="button" style="float:left;" class="btn btn-success">Update</a>
+                    <a href='/admin_product_delete/{{i.id}}' type="button" style="float:right;" class="btn btn-primary">Delete</a>
+                    </div>
+                </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <p>No results found.</p>
+        {% endif %}
+    {% endblock %}
