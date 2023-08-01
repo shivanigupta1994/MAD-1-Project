@@ -25,6 +25,7 @@ app.secret_key=os.urandom(24)
 # contain route handlers & views for different parts of application i.e., HTTP requests
 from controller import *
 from admin import *
+from API import *
 
 
 #script run as main module
