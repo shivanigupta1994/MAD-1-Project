@@ -1,7 +1,7 @@
 from flask import render_template, session, request, redirect, flash
 from app import *
 from model import *
-from sqlalchemy import or_, func
+from sqlalchemy import or_, func, desc
 
 #Workings:
 #Redirect(): sends an HTTP redirect response to client
@@ -401,8 +401,9 @@ def add_to_cart_to_home(id):
 @app.route("/order")
 def order():
     if "user_id" in session:
-
-        return render_template("order.html")
+        all_orders = Order.query.filter_by(user_id=session["user_id"])
+        list_of_all_orders = [detail for detail in all_orders]
+        return render_template("order.html", all_orders=list_of_all_orders)
     else:
         return redirect("/sign-in")
     
@@ -410,13 +411,12 @@ def order():
 @app.route("/order_details/<int:id>")
 def order_details(id):
     orders = Order_details.query.filter_by(order_id=id)
+    for_price = Order.query.filter_by(id=id).first()
     order_detail = []
-    total_price = 0
+    total_price = for_price.order_total
     for order in orders:
         product = Product.query.filter_by(id=order.product_id).first()
         order_detail.append((product.name, order.product_qty, product.price_per_unit, product.category, product.image, product.brand, int(product.price_per_unit)*int(order.product_qty), order.order_id))
-    for price in order_detail:
-        total_price += int(price[6])
     return render_template("order_details.html", product_list=order_detail, total_price=total_price, order_id=id)
 
 @app.route("/promocode")
@@ -442,10 +442,10 @@ def promocode():
             #Calaculate the total price of all items in the cart by adding up of individual prices
             for price in pro_list:
                 total_price += int(price[6])
-            #Render cart.html template & pass the product_list (pro_list) containing product details in the cart & cart_total containing total_price
             total_price = total_price - int(total_price * 0.1)
             total_price = 0 if total_price < 0 else total_price
             flash("IIT10 applied... 10% Off")
+            #Render cart.html template & pass the product_list (pro_list) containing product details in the cart & cart_total containing total_price
             return render_template("cart.html", product_list = pro_list , flag=False, cart_total=total_price)
         elif offer == "IIT500":
             #Query the user cart items from the database based on their user_id
@@ -466,10 +466,10 @@ def promocode():
             #Calaculate the total price of all items in the cart by adding up of individual prices
             for price in pro_list:
                 total_price += int(price[6])
-            #Render cart.html template & pass the product_list (pro_list) containing product details in the cart & cart_total containing total_price
             total_price = total_price - 500
             total_price = 0 if total_price < 0 else total_price
             flash("IIT500 applied... 500 Off")
+            #Render cart.html template & pass the product_list (pro_list) containing product details in the cart & cart_total containing total_price
             return render_template("cart.html", product_list = pro_list , flag=False, cart_total=total_price)
     else:
         return redirect("/sign-in")
@@ -484,12 +484,13 @@ def create_order():
         db.session.add(new_order)
         db.session.flush()
         cart = Cart.query.filter_by(user_id=session["user_id"])
-        get_order_detail = Order.query.filter_by(user_id=session["user_id"], order_total=total).first()
+        get_order_detail = Order.query.filter_by(user_id=session["user_id"], order_total=total).order_by(desc(Order.order_time)).first()
         for order in cart:
-            product_detail = Product.query.filter_by(id=order.product_id)
+            product_detail = Product.query.filter_by(id=order.product_id).first()
             update_order_detail = Order_details(order_id=get_order_detail.id, user_id=session["user_id"], product_id=order.product_id, product_qty=order.product_qty, price=(int(product_detail.price_per_unit)*int(order.product_qty)))
             db.session.add(update_order_detail)
             db.session.flush()
+        Cart.query.filter_by(user_id=session["user_id"]).delete()
         db.session.commit()
         return redirect(f"/order_details/{get_order_detail.id}")
     else:

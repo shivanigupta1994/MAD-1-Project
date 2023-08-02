@@ -1,4 +1,19 @@
 {% extends "base.html" %}
     {% block main %}
         <h3>ORDER</h3>
+        <div class="row row-cols-1 row-cols-md-4 g-4 my-2 mx-2">
+            {% for order in all_orders %}
+                    <div class="col" id="mv">
+                    <a href="/order_details/{{order.id}}">
+                    <div class="card">
+                        <div class="card-body">
+                        <p class="card-title">id: {{order.id}}</p>
+                        <p class="card-title" style="float:right;">total: {{order.order_total}}</p>
+                        <p class="card-title">time: {{order.order_time}}</p>
+                        </div>
+                    </div>
+                    </a>
+                    </div>
+            {% endfor %}
+        </div>
     {% endblock %}

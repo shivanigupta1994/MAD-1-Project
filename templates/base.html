@@ -12,13 +12,13 @@
     <!-- Nav bar with store name, address & a dropdown menu -->
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid" style="font-family:Algerian;">
-          <a class="navbar-brand"><b>&nbsp;&#x0950;&nbsp;&nbsp;<i>Shyam Grocery Store</i>&nbsp;&nbsp;&#x0950;&nbsp;</b></a>
-          <a class="navbar-brand"><b>&nbsp;&nbsp;&nbsp;<i>Narela, Delhi-110040</i>&nbsp;&nbsp;&nbsp;</b></a>
+          <a href="/" class="navbar-brand"><b>&nbsp;&#x0950;&nbsp;&nbsp;<i>Shyam Grocery Store</i>&nbsp;&nbsp;&#x0950;&nbsp;</b></a>
+          <a href="/" class="navbar-brand"><b>&nbsp;&nbsp;&nbsp;<i>Narela, Delhi-110040</i>&nbsp;&nbsp;&nbsp;</b></a>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item dropdown">
                 <!-- Dropdown menu contains Home which leads to option selected as per flag value  -->
-                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Home</a>
+                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Menu</a>
                 <ul class="dropdown-menu">
                   <!-- If flag value is True, link leads to admin pages-->
                   {% if flag %}
@@ -27,6 +27,7 @@
                   <!-- If flag value is False, link leads to user page-->
                   {% else %}
                   <li><a class="dropdown-item" href="/category">Categories</a></li>
+                  <li><a class="dropdown-item" href="/order">Previous Orders</a></li>
                   {% endif %}
                 </ul>
               </li>
