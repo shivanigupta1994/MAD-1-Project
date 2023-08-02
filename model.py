@@ -1,4 +1,5 @@
 from app import db
+from datetime import datetime
 
 class User(db.Model):
     __tablename__="user"
@@ -49,3 +50,22 @@ class Cart(db.Model):
     user_id = db.Column(db.Integer)
     product_id = db.Column(db.Integer)
     product_qty = db.Column(db.Integer)
+
+class Order(db.Model):
+    __tablename__="order"
+
+    id = db.Column('id', db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer)
+    order_total = db.Column(db.Integer)
+    order_time = db.Column(db.DateTime, nullable=False, default = datetime.utcnow)
+
+class Order_details(db.Model):
+    __tablename__="order_details"
+
+    id = db.Column('id', db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer)
+    user_id = db.Column(db.Integer)
+    product_id = db.Column(db.Integer)
+    product_qty = db.Column(db.Integer)
+    price = db.Column(db.Integer)
+

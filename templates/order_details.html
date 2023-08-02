@@ -2,7 +2,7 @@
 {% block main %}
     <div class="container my-4">
         <div class="text-bg-info p-2" style="font-family: Algerian;">
-            <h1><center><u>SHOPPING CART</u></center></h1>
+            <h1><center><u>ORDER DETAILS #{{ order_id }}</u></center></h1>
         </div>
         <div class="table-responsive">
                 <table class="table table-bordered table-hover">
@@ -15,7 +15,6 @@
                             <th scope="col">Image</th>
                             <th scope="col">Brand</th>
                             <th scope="col">Total Price</th>
-                            <th scope="col">Remove from Cart</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -28,33 +27,13 @@
                             <td><img src="{{ item[4] }}" height="100px"></td>
                             <td>{{ item[5] }}</td>
                             <td>{{ item[6] }}</td>
-                            <td>
-                                <center><a href="/remove_from_cart/{{ item[7] }}" name="remove_item" class="btn btn-danger btn-sm">Remove</a></center>
-                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
         </div>
         <div class="text-center">
-                <form action="/promocode">
-                    <div class="container w-25 p-3 d-flex flex-row">
-                        <input class="form-control me-2" type="text" name="promocode" placeholder="PROMOCODE">
-                        <button class="btn btn-dark" type="submit">Apply</button>
-                    </div>
-                </form>
-                {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                            {% for message in messages %}
-                                <b>{{ message }}</b>
-                            {% endfor %}   
-                    {% endif %}
-                {% endwith %}
-            <h4>Total: ₹{{ cart_total }}</h4>
-            <form action="/create_order">
-                <input type="number" name="total_price" value="{{ cart_total }}" hidden/>
-                <button class="btn btn-success btn-lg" type="submit">Buy Now</button>
-            </form>
+            <h4>Total: ₹{{ total_price }}</h4>
         </div>
     </div>
 {% endblock %}

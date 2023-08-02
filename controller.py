@@ -15,7 +15,17 @@ from sqlalchemy import or_, func
 def index():
     #Check if "user_id" key exists in session
     if "user_id" in session: 
-        return render_template("index.html", flag=False)
+        products=Product.query.all()
+        sorted_products = [(product.id, product.name, product.brand, product.category, product.mfg_date, product.exp_date, product.unit, product.qty, product.price_per_unit, product.image) for product in products]
+        sorted_products.sort(reverse = True)
+        home_category_products = dict()
+        for product in products:
+            category = Category.query.filter_by(id=product.category).first()
+            if category.name in home_category_products:
+                home_category_products[category.name] += [(product.id, product.name, product.brand, product.category, product.mfg_date, product.exp_date, product.unit, product.qty, product.price_per_unit, product.image)]
+            else:
+                home_category_products[category.name] = [(product.id, product.name, product.brand, product.category, product.mfg_date, product.exp_date, product.unit, product.qty, product.price_per_unit, product.image)]
+        return render_template("index.html", flag=False, recent_products = sorted_products[:8], dict_of_all_category_products = home_category_products)
     else:
         return redirect("/sign-in")
     
@@ -353,3 +363,134 @@ def add_to_cart_search(id):
              
 
         
+#ROUTE FOR ADDING AN ITEM TO USER CART
+@app.route("/add_to_cart_to_home/<int:id>", methods=["POST"])
+def add_to_cart_to_home(id):
+    #Check if "user_id" key exists in the session
+    if "user_id" in session:
+        #Query the product with the given "id" from the database
+        prod=Product.query.filter_by(id=id).first()
+        #Query the user cart to check if the product is already in cart based on its "id"
+        cart = Cart.query.filter_by(user_id=session["user_id"], product_id=id).first()
+        #Get qty of the product to be added to cart from submitted form
+        qty = request.form.get("quantity")
+        if (cart):
+            #If product is already in cart, update its qty by adding new qty
+            cart.product_qty += int(qty)
+            #Flush changes to database
+            db.session.flush()
+            #Commit changes to database
+            db.session.commit()
+            #Redirect user back to product page after adding product to cart
+            return redirect("/")
+        else:
+            #If product is not already in cart, create a new cart item with product details
+            new_cart_item=Cart(user_id=session["user_id"], product_id=id, product_qty=qty)
+            #Add new cart item to the database session
+            db.session.add(new_cart_item)
+            #Commit changes to database
+            db.session.commit()
+            #Redirect user back to the product page after adding product to cart
+            return redirect("/")
+    else:
+        #If "user_id" key not exists in session
+        #redirect user to sign-in page to authenticate before performing any cart-related actions
+        return redirect("/sign-in")
+            
+
+@app.route("/order")
+def order():
+    if "user_id" in session:
+
+        return render_template("order.html")
+    else:
+        return redirect("/sign-in")
+    
+
+@app.route("/order_details/<int:id>")
+def order_details(id):
+    orders = Order_details.query.filter_by(order_id=id)
+    order_detail = []
+    total_price = 0
+    for order in orders:
+        product = Product.query.filter_by(id=order.product_id).first()
+        order_detail.append((product.name, order.product_qty, product.price_per_unit, product.category, product.image, product.brand, int(product.price_per_unit)*int(order.product_qty), order.order_id))
+    for price in order_detail:
+        total_price += int(price[6])
+    return render_template("order_details.html", product_list=order_detail, total_price=total_price, order_id=id)
+
+@app.route("/promocode")
+def promocode():
+    if "user_id" in session:
+        offer = request.args.get("promocode")
+        if offer == "IIT10":
+            #Query the user cart items from the database based on their user_id
+            cart = Cart.query.filter_by(user_id=session["user_id"])
+            #Convert the query result into list
+            cart_list = [i for i in cart]
+            #Create empty list to store product details in the cart 
+            pro_list = []
+            #Initailize the total_price of the items in the cart 
+            total_price = 0
+            #Loop through each item in the cart list to get the product_details
+            for item in cart_list:
+                #Query the product details based on product_id stored in the cart
+                pro = Product.query.filter_by(id=item.product_id).first()
+                #Append product details to the pro_list
+                pro_list.append((pro.name, item.product_qty, pro.price_per_unit, pro.category, pro.image, pro.brand, int(pro.price_per_unit)*int(item.product_qty), item.cart_id ))
+                print(pro.name, item.product_qty, pro.price_per_unit, pro.category, pro.image, pro.brand)
+            #Calaculate the total price of all items in the cart by adding up of individual prices
+            for price in pro_list:
+                total_price += int(price[6])
+            #Render cart.html template & pass the product_list (pro_list) containing product details in the cart & cart_total containing total_price
+            total_price = total_price - int(total_price * 0.1)
+            total_price = 0 if total_price < 0 else total_price
+            flash("IIT10 applied... 10% Off")
+            return render_template("cart.html", product_list = pro_list , flag=False, cart_total=total_price)
+        elif offer == "IIT500":
+            #Query the user cart items from the database based on their user_id
+            cart = Cart.query.filter_by(user_id=session["user_id"])
+            #Convert the query result into list
+            cart_list = [i for i in cart]
+            #Create empty list to store product details in the cart 
+            pro_list = []
+            #Initailize the total_price of the items in the cart 
+            total_price = 0
+            #Loop through each item in the cart list to get the product_details
+            for item in cart_list:
+                #Query the product details based on product_id stored in the cart
+                pro = Product.query.filter_by(id=item.product_id).first()
+                #Append product details to the pro_list
+                pro_list.append((pro.name, item.product_qty, pro.price_per_unit, pro.category, pro.image, pro.brand, int(pro.price_per_unit)*int(item.product_qty), item.cart_id ))
+                print(pro.name, item.product_qty, pro.price_per_unit, pro.category, pro.image, pro.brand)
+            #Calaculate the total price of all items in the cart by adding up of individual prices
+            for price in pro_list:
+                total_price += int(price[6])
+            #Render cart.html template & pass the product_list (pro_list) containing product details in the cart & cart_total containing total_price
+            total_price = total_price - 500
+            total_price = 0 if total_price < 0 else total_price
+            flash("IIT500 applied... 500 Off")
+            return render_template("cart.html", product_list = pro_list , flag=False, cart_total=total_price)
+    else:
+        return redirect("/sign-in")
+            
+
+@app.route("/create_order")
+def create_order():
+    if "user_id" in session:
+        total = request.args.get("total_price")
+        new_order = Order(user_id=session["user_id"], order_total=total)
+        #we use flush bcoz of it, we can use of order_id in order_detail table. This way if we'll face any error, the above entries won't be permanent
+        db.session.add(new_order)
+        db.session.flush()
+        cart = Cart.query.filter_by(user_id=session["user_id"])
+        get_order_detail = Order.query.filter_by(user_id=session["user_id"], order_total=total).first()
+        for order in cart:
+            product_detail = Product.query.filter_by(id=order.product_id)
+            update_order_detail = Order_details(order_id=get_order_detail.id, user_id=session["user_id"], product_id=order.product_id, product_qty=order.product_qty, price=(int(product_detail.price_per_unit)*int(order.product_qty)))
+            db.session.add(update_order_detail)
+            db.session.flush()
+        db.session.commit()
+        return redirect(f"/order_details/{get_order_detail.id}")
+    else:
+        return redirect("/sign-in")
