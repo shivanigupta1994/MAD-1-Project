@@ -1,5 +1,13 @@
 {% extends "base.html" %}
 {% block main %}
+<!-- Render flashed messages -->
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+        {% for message in messages %}
+            <center><b>{{ message }}</b></center>
+        {% endfor %}
+{% endif %}
+{% endwith %}
     <div class="container my-4">
         <div class="text-bg-info p-2" style="font-family: Algerian;">
             <h1><center><u>ORDER DETAILS #{{ order_id }}</u></center></h1>

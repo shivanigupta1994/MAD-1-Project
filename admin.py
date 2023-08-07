@@ -1,4 +1,4 @@
-from flask import render_template, session, request, redirect
+from flask import render_template, session, request, redirect, flash
 from app import *
 from model import *
 from werkzeug.utils import secure_filename    #function from werkzeug to handle file uploads securely
@@ -70,6 +70,7 @@ def admin_login():
         else:
             #If no admin with provided credentials is found, 
             print("not found")
+            flash("INVALID EMAIL OR PASSWORD")
             #Redirect back to admin sign-in page
             return redirect("/admin_sign-in")
     else:
@@ -327,6 +328,7 @@ def admin_category_update(id):
             db.session.flush()
             #Commit the changes to the database
             db.session.commit()
+            flash("Category updated succesfully!")
             #Redirect the admin back to admin category cms after successfully updating the category
             return redirect("/admin_category_cms")
         else:
@@ -387,6 +389,7 @@ def admin_product_update(id):
             db.session.flush()
             #Commit the changes to the database
             db.session.commit()
+            flash("Product updated succesfully!")
             #Redirect the admin back to admin product cms after successfully updating the product
             return redirect("/admin_product_cms")
         else:
@@ -410,6 +413,7 @@ def admin_category_delete(id):
         db.session.flush()
         #Commit the changes to database
         db.session.commit()
+        flash("Category deleted successfully!")
     #Redirect the admin back to admin_category_cms page after successfully deleting the category
     return redirect("/admin_category_cms")
     
@@ -425,6 +429,7 @@ def admin_product_delete(id):
         db.session.flush()
         #Commit the changes to database
         db.session.commit()
+        flash("Product deleted successfully!")
     #Redirect the admin back to admin_product_cms page after successfully deleting the product
     return redirect("/admin_product_cms")
 

@@ -12,8 +12,13 @@
     <!-- Nav bar with store name, address & a dropdown menu -->
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid" style="font-family:Algerian;">
+          {% if flag %}
+          <a href="/cms" class="navbar-brand"><b>&nbsp;&#x0950;&nbsp;&nbsp;<i>Shyam Grocery Store</i>&nbsp;&nbsp;&#x0950;&nbsp;</b></a>
+          <a href="/cms" class="navbar-brand"><b>&nbsp;&nbsp;&nbsp;<i>Narela, Delhi-110040</i>&nbsp;&nbsp;&nbsp;</b></a>
+          {% else %}
           <a href="/" class="navbar-brand"><b>&nbsp;&#x0950;&nbsp;&nbsp;<i>Shyam Grocery Store</i>&nbsp;&nbsp;&#x0950;&nbsp;</b></a>
           <a href="/" class="navbar-brand"><b>&nbsp;&nbsp;&nbsp;<i>Narela, Delhi-110040</i>&nbsp;&nbsp;&nbsp;</b></a>
+          {% endif %}
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item dropdown">

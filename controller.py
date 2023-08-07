@@ -18,6 +18,7 @@ def index():
         products=Product.query.all()
         sorted_products = [(product.id, product.name, product.brand, product.category, product.mfg_date, product.exp_date, product.unit, product.qty, product.price_per_unit, product.image) for product in products]
         sorted_products.sort(reverse = True)
+        print(sorted_products)
         home_category_products = dict()
         for product in products:
             category = Category.query.filter_by(id=product.category).first()
@@ -413,10 +414,15 @@ def order_details(id):
     orders = Order_details.query.filter_by(order_id=id)
     for_price = Order.query.filter_by(id=id).first()
     order_detail = []
+    check_for_out_of_stock = []
     total_price = for_price.order_total
     for order in orders:
         product = Product.query.filter_by(id=order.product_id).first()
+        if product.qty <= 0:
+            check_for_out_of_stock.append(product.name)
         order_detail.append((product.name, order.product_qty, product.price_per_unit, product.category, product.image, product.brand, int(product.price_per_unit)*int(order.product_qty), order.order_id))
+    if check_for_out_of_stock:
+        flash(f"These products are Out-of-Stock {check_for_out_of_stock} ! Will back to you soon...")
     return render_template("order_details.html", product_list=order_detail, total_price=total_price, order_id=id)
 
 @app.route("/promocode")
@@ -489,9 +495,11 @@ def create_order():
             product_detail = Product.query.filter_by(id=order.product_id).first()
             update_order_detail = Order_details(order_id=get_order_detail.id, user_id=session["user_id"], product_id=order.product_id, product_qty=order.product_qty, price=(int(product_detail.price_per_unit)*int(order.product_qty)))
             db.session.add(update_order_detail)
+            product_detail.qty-=order.product_qty
             db.session.flush()
         Cart.query.filter_by(user_id=session["user_id"]).delete()
         db.session.commit()
+        flash("Order placed successfully...Will reach you soon!")
         return redirect(f"/order_details/{get_order_detail.id}")
     else:
         return redirect("/sign-in")

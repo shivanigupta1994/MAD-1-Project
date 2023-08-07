@@ -31,6 +31,8 @@ from API import *
 #script run as main module
 if __name__== "__main__":
     #host & port no. on which flask application started in debug mode    
-    app.run(host='0.0.0.0', port=8080, debug=True)    
+    #app.run(host='0.0.0.0', port=8080, debug=True)   
+    app.run(host='0.0.0.0', port=8080)    
+ 
 
 
