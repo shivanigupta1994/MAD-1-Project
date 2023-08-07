@@ -375,6 +375,7 @@ def add_to_cart_to_home(id):
         cart = Cart.query.filter_by(user_id=session["user_id"], product_id=id).first()
         #Get qty of the product to be added to cart from submitted form
         qty = request.form.get("quantity")
+        htmlid=request.form.get("htmlid")
         if (cart):
             #If product is already in cart, update its qty by adding new qty
             cart.product_qty += int(qty)
@@ -383,7 +384,7 @@ def add_to_cart_to_home(id):
             #Commit changes to database
             db.session.commit()
             #Redirect user back to product page after adding product to cart
-            return redirect("/")
+            return redirect(f"/#{htmlid}")
         else:
             #If product is not already in cart, create a new cart item with product details
             new_cart_item=Cart(user_id=session["user_id"], product_id=id, product_qty=qty)
@@ -392,7 +393,7 @@ def add_to_cart_to_home(id):
             #Commit changes to database
             db.session.commit()
             #Redirect user back to the product page after adding product to cart
-            return redirect("/")
+            return redirect(f"/#{htmlid}")
     else:
         #If "user_id" key not exists in session
         #redirect user to sign-in page to authenticate before performing any cart-related actions
@@ -475,6 +476,28 @@ def promocode():
             total_price = total_price - 500
             total_price = 0 if total_price < 0 else total_price
             flash("IIT500 applied... 500 Off")
+            #Render cart.html template & pass the product_list (pro_list) containing product details in the cart & cart_total containing total_price
+            return render_template("cart.html", product_list = pro_list , flag=False, cart_total=total_price)
+        else:
+            #Query the user cart items from the database based on their user_id
+            cart = Cart.query.filter_by(user_id=session["user_id"])
+            #Convert the query result into list
+            cart_list = [i for i in cart]
+            #Create empty list to store product details in the cart 
+            pro_list = []
+            #Initailize the total_price of the items in the cart 
+            total_price = 0
+            #Loop through each item in the cart list to get the product_details
+            for item in cart_list:
+                #Query the product details based on product_id stored in the cart
+                pro = Product.query.filter_by(id=item.product_id).first()
+                #Append product details to the pro_list
+                pro_list.append((pro.name, item.product_qty, pro.price_per_unit, pro.category, pro.image, pro.brand, int(pro.price_per_unit)*int(item.product_qty), item.cart_id ))
+                print(pro.name, item.product_qty, pro.price_per_unit, pro.category, pro.image, pro.brand)
+            #Calaculate the total price of all items in the cart by adding up of individual prices
+            for price in pro_list:
+                total_price += int(price[6])
+            flash("Wrong Promocode...")
             #Render cart.html template & pass the product_list (pro_list) containing product details in the cart & cart_total containing total_price
             return render_template("cart.html", product_list = pro_list , flag=False, cart_total=total_price)
     else:

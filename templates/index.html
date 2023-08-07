@@ -50,7 +50,7 @@
         {%for i in recent_products %}
         <form action="/add_to_cart_to_home/{{i[0]}}", method="POST">
             <div class="col" id="mv">
-            <div class="card">
+            <div class="card" id="recent{{i[0]}}">
                 <a href='/product/{{i[0]}}'><img src="{{i[9]}}" height="225px" class="card-img-top" alt="{{i[1]}}"></a>
                 <div class="card-body">
                 <!-- <p class="card-title">id: {{i.id}}</p> -->
@@ -73,6 +73,7 @@
                     </button>
                 </div>
                 <!-- <p class="card-title">mfg_date: {{i.mfg_date}}</p> -->
+                <input type="text" value="recent{{i[0]}}", name="htmlid" hidden />
                 <p class="card-title" style="float:left;">exp_date: {{i[5]}}</p>
                 <!-- <p class="card-title">unit: {{i.unit}}</p> -->
                 <!-- <p class="card-title">qty: {{i.qty}}</p> -->
@@ -91,7 +92,7 @@
           {% for i in dict_of_all_category_products[category] %}
           <form action="/add_to_cart_to_home/{{i[0]}}", method="POST">
               <div class="col" id="mv">
-              <div class="card">
+              <div class="card" id="{{ category }}{{i[0]}}">
                   <a href='/product/{{i[0]}}'><img src="{{i[9]}}" height="225px" class="card-img-top" alt="{{i[1]}}"></a>
                   <div class="card-body">
                   <!-- <p class="card-title">id: {{i.id}}</p> -->
@@ -114,6 +115,7 @@
                       </button>
                   </div>
                   <!-- <p class="card-title">mfg_date: {{i.mfg_date}}</p> -->
+                  <input type="text" value="{{ category }}{{ i[0] }}" name="htmlid" hidden />
                   <p class="card-title" style="float:left;">exp_date: {{i[5]}}</p>
                   <!-- <p class="card-title">unit: {{i.unit}}</p> -->
                   <!-- <p class="card-title">qty: {{i.qty}}</p> -->
