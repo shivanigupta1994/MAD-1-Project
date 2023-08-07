@@ -2,6 +2,8 @@ from flask import render_template, session, request, redirect, flash
 from app import *
 from model import *
 from werkzeug.utils import secure_filename    #function from werkzeug to handle file uploads securely
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
@@ -20,6 +22,23 @@ def allowed_file(filename):
 def admin_index():
     #Checks if "admon_id" key exists in the session
     if "admin_id" in session: 
+        details_of_products=Product.query.all()
+        # Sample data
+        products = [detail.name for detail in details_of_products]
+        qty = [detail.qty for detail in details_of_products]
+        #Create a bar plot using Seaborn
+        sns.set(style="whitegrid")  # Set the style of the plot
+        plt.figure(figsize=(15, 15))  # Adjust the size of the plot
+        #Create the bar plot
+        ax = sns.barplot(x=products, y=qty, palette="viridis")
+        # Rotate x-axis labels for better readability
+        ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
+        #Adding labels and title
+        plt.xlabel("Products", fontweight="bold")
+        plt.ylabel("Quantity", fontweight="bold")
+        plt.title("Inventory in Stock", fontweight="bold")
+        #Save the plot as an image in static
+        plt.savefig("static/output.png")
         #If admin is logged in
         return render_template("admin_index.html", flag=True)
     else:
@@ -365,6 +384,7 @@ def admin_product_update(id):
         #Get the updated product details from the form submitted by the admin
         product_name = request.form.get("product_name")
         password = request.form.get("password")
+        quantity = request.form.get("product_qty")
         #Get the uploaded image file from the form submitted by the admin
         file = request.files['file']
         filename = None
@@ -382,6 +402,7 @@ def admin_product_update(id):
         if admin_check:
             #If the admin is verified and an image was uploaded, update the product name
             check[0].name = product_name
+            check[0].qty = quantity
             if filename is not None:
                 #sets the image path
                 check[0].image = "/static/"+filename
