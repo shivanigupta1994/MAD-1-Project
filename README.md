@@ -82,5 +82,5 @@ DELETE:- localhost:8080/product_api/{id}
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── requirements.txt<br>
 
 ### For testing purpose, use this email_id password:
-email_id: rishabh@gmail.com<br>
+email_id: shivani@gmail.com<br>
 password: 12345
