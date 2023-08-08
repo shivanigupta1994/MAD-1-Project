@@ -385,6 +385,7 @@ def admin_product_update(id):
         product_name = request.form.get("product_name")
         password = request.form.get("password")
         quantity = request.form.get("product_qty")
+        price = request.form.get("product_price_per_unit")
         #Get the uploaded image file from the form submitted by the admin
         file = request.files['file']
         filename = None
@@ -403,6 +404,7 @@ def admin_product_update(id):
             #If the admin is verified and an image was uploaded, update the product name
             check[0].name = product_name
             check[0].qty = quantity
+            check[0].price_per_unit = price
             if filename is not None:
                 #sets the image path
                 check[0].image = "/static/"+filename
