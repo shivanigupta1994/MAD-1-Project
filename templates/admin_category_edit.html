@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block title %}UPDATE CATEGORY{% endblock %}
     {% block main %}
     <div class="container mt-5 w-50 p-3">
         <form enctype="multipart/form-data" action="/admin_category_update/{{category_info.id}}" method="POST">

@@ -382,10 +382,14 @@ def admin_product_update(id):
     #Check if "admin_id" key exists in session
     if "admin_id" in session:
         #Get the updated product details from the form submitted by the admin
-        product_name = request.form.get("product_name")
-        password = request.form.get("password")
+        name = request.form.get("product_name")
+        brand = request.form.get("product_brand")
+        mfg_date = request.form.get("product_mfg_date")
+        exp_date = request.form.get("product_exp_date")
+        unit = request.form.get("product_unit")
         quantity = request.form.get("product_qty")
         price = request.form.get("product_price_per_unit")
+        password = request.form.get("password")
         #Get the uploaded image file from the form submitted by the admin
         file = request.files['file']
         filename = None
@@ -402,7 +406,11 @@ def admin_product_update(id):
         check = [i for i in product]
         if admin_check:
             #If the admin is verified and an image was uploaded, update the product name
-            check[0].name = product_name
+            check[0].name = name
+            check[0].brand = brand
+            check[0].mfg_date = mfg_date
+            check[0].exp_date = exp_date
+            check[0].unit = unit
             check[0].qty = quantity
             check[0].price_per_unit = price
             if filename is not None:
