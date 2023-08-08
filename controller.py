@@ -15,19 +15,26 @@ from sqlalchemy import or_, func, desc
 def index():
     #Check if "user_id" key exists in session
     if "user_id" in session: 
+        #Query all products from the database
         products=Product.query.all()
+        #Create a list of product details as tuples and sort in order by ID
         sorted_products = [(product.id, product.name, product.brand, product.category, product.mfg_date, product.exp_date, product.unit, product.qty, product.price_per_unit, product.image) for product in products]
         sorted_products.sort(reverse = True)
         print(sorted_products)
+        #Create a dictionary to group products by category
         home_category_products = dict()
         for product in products:
+            #Query the category associated with the product
             category = Category.query.filter_by(id=product.category).first()
+            #Append product details to the list under the appropriate category key
             if category.name in home_category_products:
                 home_category_products[category.name] += [(product.id, product.name, product.brand, product.category, product.mfg_date, product.exp_date, product.unit, product.qty, product.price_per_unit, product.image)]
             else:
                 home_category_products[category.name] = [(product.id, product.name, product.brand, product.category, product.mfg_date, product.exp_date, product.unit, product.qty, product.price_per_unit, product.image)]
+        #Render template "index.html" with relevant variables
         return render_template("index.html", flag=False, recent_products = sorted_products[:8], dict_of_all_category_products = home_category_products)
     else:
+        #If user is not logged in, redirect to the sign-in page
         return redirect("/sign-in")
     
 
@@ -39,6 +46,7 @@ def sign_in():
         #retrieve the user_id from session & store it in variable
         userid = session["user_id"]
         return render_template("index.html", flag=False)
+    #If user is not logged in, render the "sign-in.html" template
     return render_template("sign-in.html", flag=False)
 
 
@@ -259,6 +267,7 @@ def add_to_cart(id):
         return redirect("/sign-in")
              
 
+#ROUTE HANDLER FOR SEARCH
 @app.route("/search")
 def search():
     #request.arg.get() is used to retrieve query parameters from the URL
@@ -275,6 +284,9 @@ def search():
             return render_template("search.html", query=input_query, results=products_in_category, flag=False)
 
         #If no category matches, search for products matching the input query
+        #"db.or_" used to create a SQL "OR" condition when querying a database
+        #"ilike" operator is used to match a pattern in a case-insensitive manner.
+        #"f-string" is used to construct the pattern for the "LIKE" query
         product_results = Product.query.filter(
             db.or_(
                 Product.name.ilike(f"%{input_query}%"),
@@ -284,10 +296,11 @@ def search():
 
         if product_results:
             return render_template("search.html", query=input_query, results=product_results, flag=False)
-
+    #If there is no input query, render the "search.html" template with no results
     return render_template("search.html", query=input_query, results=None, flag=False)
 
 
+#ROUTE FOR ADDING AN ITEM TO USER CART BASED ON SEARCH QUERY
 @app.route("/add_to_cart_search/<int:id>", methods=["POST", "GET"])
 def add_to_cart_search(id):    
     #Check if "user_id" key exists in the session
@@ -362,9 +375,8 @@ def add_to_cart_search(id):
         #redirect user to sign-in page to authenticate before performing any cart-related actions
         return redirect("/sign-in")
              
-
-        
-#ROUTE FOR ADDING AN ITEM TO USER CART
+      
+#ROUTE FOR ADDING AN ITEM TO USER CART FROM HOME PAGE
 @app.route("/add_to_cart_to_home/<int:id>", methods=["POST"])
 def add_to_cart_to_home(id):
     #Check if "user_id" key exists in the session
@@ -375,6 +387,7 @@ def add_to_cart_to_home(id):
         cart = Cart.query.filter_by(user_id=session["user_id"], product_id=id).first()
         #Get qty of the product to be added to cart from submitted form
         qty = request.form.get("quantity")
+        #This ID is used to create a redirect link back to the product page after adding the product to the cart.
         htmlid=request.form.get("htmlid")
         if (cart):
             #If product is already in cart, update its qty by adding new qty
@@ -400,36 +413,57 @@ def add_to_cart_to_home(id):
         return redirect("/sign-in")
             
 
+#ROUTE FOR DISPLAYING USER ORDERS
 @app.route("/order")
 def order():
+    #Check if "user_id" key exists in session
     if "user_id" in session:
+        #Query the Order table to retrieve all orders associated with the user
         all_orders = Order.query.filter_by(user_id=session["user_id"])
+        #Create a list to store details of all orders
         list_of_all_orders = [detail for detail in all_orders]
+        #Render the "order.html" template and pass the list of orders to the template
         return render_template("order.html", all_orders=list_of_all_orders)
     else:
+        #If user is not authenticated, redirect to the sign-in page
         return redirect("/sign-in")
     
 
+#ROUTE FOR HANDLING ORDERS
 @app.route("/order_details/<int:id>")
 def order_details(id):
+    #Query the Order_details table to retrieve details of the specified order
     orders = Order_details.query.filter_by(order_id=id)
+    #Query the Order table to retrieve information about the specified order
     for_price = Order.query.filter_by(id=id).first()
+    #Create empty lists to store order details and products that are out of stock
     order_detail = []
     check_for_out_of_stock = []
+    #Get the total price of the order from the Order table
     total_price = for_price.order_total
+    #Iterate through each order detail
     for order in orders:
+        #Query the Product table to get information about the product in the order detail
         product = Product.query.filter_by(id=order.product_id).first()
+        #Check if the product is out of stock (qty <= 0)
         if product.qty <= 0:
             check_for_out_of_stock.append(product.name)
+        #Append details of the product and order to the order_detail list
         order_detail.append((product.name, order.product_qty, product.price_per_unit, product.category, product.image, product.brand, int(product.price_per_unit)*int(order.product_qty), order.order_id))
+    #If there are products out of stock, display a flash message
     if check_for_out_of_stock:
         flash(f"These products are Out-of-Stock {check_for_out_of_stock} ! Will back to you soon...")
+    #Render the "order_details.html" template and pass relevant data to the template
     return render_template("order_details.html", product_list=order_detail, total_price=total_price, order_id=id)
 
+
+#ROUTE FOR PROMOCODE
 @app.route("/promocode")
 def promocode():
     if "user_id" in session:
+        #Retrieve the "promocode" parameter from the URL query string
         offer = request.args.get("promocode")
+        #Check if the promocode is "IIT10"
         if offer == "IIT10":
             #Query the user cart items from the database based on their user_id
             cart = Cart.query.filter_by(user_id=session["user_id"])
@@ -449,7 +483,9 @@ def promocode():
             #Calaculate the total price of all items in the cart by adding up of individual prices
             for price in pro_list:
                 total_price += int(price[6])
+            #Apply a 10% discount to the total price:
             total_price = total_price - int(total_price * 0.1)
+            #Ensure that the total price is not negative
             total_price = 0 if total_price < 0 else total_price
             flash("IIT10 applied... 10% Off")
             #Render cart.html template & pass the product_list (pro_list) containing product details in the cart & cart_total containing total_price
@@ -473,7 +509,9 @@ def promocode():
             #Calaculate the total price of all items in the cart by adding up of individual prices
             for price in pro_list:
                 total_price += int(price[6])
+            #Apply flat 500 off discount to the total price
             total_price = total_price - 500
+            #Ensure that the total price is not negative
             total_price = 0 if total_price < 0 else total_price
             flash("IIT500 applied... 500 Off")
             #Render cart.html template & pass the product_list (pro_list) containing product details in the cart & cart_total containing total_price
@@ -504,25 +542,39 @@ def promocode():
         return redirect("/sign-in")
             
 
+#ROUTE FOR CREATING A NEW ORDER
 @app.route("/create_order")
 def create_order():
+    #Check if "user_id" exists in the session
     if "user_id" in session:
+        #Get the total price of the order from the query parameters
         total = request.args.get("total_price")
+        #Create a new Order record with the user's ID and the total price
         new_order = Order(user_id=session["user_id"], order_total=total)
-        #we use flush bcoz of it, we can use of order_id in order_detail table. This way if we'll face any error, the above entries won't be permanent
         db.session.add(new_order)
+        #we use flush bcoz of it, we can use of order_id in order_detail table. This way if we'll face any error, the above entries won't be permanent
+        #To ensure that the new order is created and has an order_id.
         db.session.flush()
+        #Query the user's cart items
         cart = Cart.query.filter_by(user_id=session["user_id"])
+        #Query the newly created order using get_order_detail.
         get_order_detail = Order.query.filter_by(user_id=session["user_id"], order_total=total).order_by(desc(Order.order_time)).first()
+        #For each item in the cart, retrieve the corresponding product details
         for order in cart:
             product_detail = Product.query.filter_by(id=order.product_id).first()
+            #Create a new Order_details record with the order ID, user ID, product ID, product quantity, and calculated price
             update_order_detail = Order_details(order_id=get_order_detail.id, user_id=session["user_id"], product_id=order.product_id, product_qty=order.product_qty, price=(int(product_detail.price_per_unit)*int(order.product_qty)))
             db.session.add(update_order_detail)
+            #Update the product quantity by subtracting the ordered quantity
             product_detail.qty-=order.product_qty
+            #To apply the changes and ensure the order_id is available for the order details
             db.session.flush()
+        #Delete the cart items for the user
         Cart.query.filter_by(user_id=session["user_id"]).delete()
+        #Commit the changes to the database
         db.session.commit()
         flash("Order placed successfully...Will reach you soon!")
+        #Redirect the user to the order details page for the newly created order
         return redirect(f"/order_details/{get_order_detail.id}")
     else:
         return redirect("/sign-in")

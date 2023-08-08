@@ -1,0 +1,198 @@
+openapi: 3.0.0
+info:
+  title: Flask API Documentation
+  version: 1.0.0
+paths:
+  /category_api/{id}:
+    get:
+      summary: Get a category by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the category
+      responses:
+        '200':
+          description: Successful response
+    put:
+      summary: Update a category by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+                - name
+      responses:
+        '200':
+          description: Successful response
+        '404':
+          description: Category not found
+    delete:
+      summary: Delete a category by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the category
+      responses:
+        '200':
+          description: Successful response
+
+  /category_api:
+    get:
+      summary: Get all categories
+      responses:
+        '200':
+          description: Successful response
+    post:
+      summary: Create a new category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+                - name
+      responses:
+        '200':
+          description: Successful response
+
+  /product_api/{id}:
+    get:
+      summary: Get a product by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the product
+      responses:
+        '200':
+          description: Successful response
+    put:
+      summary: Update a product by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                brand:
+                  type: string
+                category_id:
+                  type: integer
+                mfg_date:
+                  type: string
+                  format: date
+                exp_date:
+                  type: string
+                  format: date
+                unit:
+                  type: string
+                quantity:
+                  type: integer
+                price:
+                  type: number
+              required:
+                - name
+                - brand
+                - category_id
+                - mfg_date
+                - exp_date
+                - unit
+                - quantity
+                - price
+      responses:
+        '200':
+          description: Successful response
+        '404':
+          description: Product not found
+    delete:
+      summary: Delete a product by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the product
+      responses:
+        '200':
+          description: Successful response
+
+  /product_api:
+    get:
+      summary: Get all products
+      responses:
+        '200':
+          description: Successful response
+    post:
+      summary: Create a new product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                brand:
+                  type: string
+                category_id:
+                  type: integer
+                mfg_date:
+                  type: string
+                  format: date
+                exp_date:
+                  type: string
+                  format: date
+                unit:
+                  type: string
+                quantity:
+                  type: integer
+                price:
+                  type: number
+              required:
+                - name
+                - brand
+                - category_id
+                - mfg_date
+                - exp_date
+                - unit
+                - quantity
+                - price
+      responses:
+        '200':
+          description: Successful response

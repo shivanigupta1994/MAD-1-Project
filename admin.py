@@ -486,6 +486,5 @@ def admin_search():
     return render_template("admin_search.html", query=input_query, results=None, flag=True)
 
 
-#QUES???? IN DELETION PART, WHY NOT REDIRECT TO SIGN-IN PAGE IF ADMIN_ID KEY NOT EXISTS
 
 
