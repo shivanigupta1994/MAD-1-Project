@@ -8,7 +8,7 @@ command: virtualenv <venv_name>
 ```
 - use requirements.txt to install compatible packages
 ```
-command: pip install -r requirment.txt
+command: pip install -r requirements.txt
 ```
 - To run flask server
 ```
